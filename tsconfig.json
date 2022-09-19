@@ -1,0 +1,8 @@
+{
+  "extends": "@monteway/typescript/tsconfig-next-app.json",
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "include": ["src/**/*", "pages/**/*"],
+  "exclude": ["node_modules", ".next", "out", "dist"]
+}

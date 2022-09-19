@@ -1,0 +1,64 @@
+name: main
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches: [main, develop]
+
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: ['**']
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup environment
+        uses: monterail/github-actions/setup-js@main
+
+      - name: Lint packages
+        run: npm run lint
+
+  build:
+    if: ${{ github.event.pull_request.draft == false }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Cancel outdated workflows
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Setup Node and install dependencies
+        uses: monterail/github-actions/setup-js@main
+
+      - name: Build app
+        run: npm run build
+
+  build-in-docker:
+    if: ${{ github.event.pull_request.draft == false }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Cancel outdated workflows
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Setup Node and install dependencies
+        uses: monterail/github-actions/setup-js@main
+
+      - name: Build app in docker
+        run: npm run build:docker
