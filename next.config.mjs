@@ -2,7 +2,10 @@ import { compose } from '@monteway/nextjs/config.js';
 import { withSentryConfig } from '@sentry/nextjs';
 import * as envalid from 'envalid';
 
+const config = JSON.parse(readFileSync('./fbtrc.json', 'utf-8'));
+
 import 'dotenv/config';
+import { readFileSync } from 'fs';
 
 /**
  * @typedef {import('next').NextConfig} NextConfig
@@ -42,12 +45,27 @@ const nextConfig = {
   env: {
     API_URL_OR_PATHNAME: env.API_URL_OR_PATHNAME,
     SENTRY_DSN: env.SENTRY_DSN,
+
+    NEXT_PUBLIC_FBT_ROOT_DIR: process.cwd(),
+    NEXT_PUBLIC_FBT_DEFAULT_LOCALE: config.NEXT_PUBLIC_FBT_DEFAULT_LOCALE,
+    NEXT_PUBLIC_FBT_INTL_URL: config.NEXT_PUBLIC_FBT_INTL_URL,
+    NEXT_PUBLIC_FBT_PATTERNS: JSON.stringify(config.NEXT_PUBLIC_FBT_PATTERNS),
   },
 
   // ESLint does not feel like something that should run as part of the build.
   // Instead we should run it before the build is done.
   eslint: {
     ignoreDuringBuilds: true,
+  },
+
+  i18n: {
+    // These are all the locales you want to support in
+    // your application
+    locales: ['en-US', 'pl-PL', 'es-ES'],
+    // This is the default locale you want to be used when visiting
+    // a non-locale prefixed path e.g. `/hello`
+    defaultLocale: 'en-US',
+    localeDetection: false,
   },
 
   // Extend webpack config to add @svgr/webpack to be able to import svg files.

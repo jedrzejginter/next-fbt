@@ -1,0 +1,8 @@
+{
+  "NEXT_PUBLIC_FBT_DEFAULT_LOCALE": "en_US",
+  "NEXT_PUBLIC_FBT_INTL_URL": "http://localhost:3000",
+  "NEXT_PUBLIC_FBT_PATTERNS": [
+    ["src/pages/home/comp.tsx", "pages-comp"],
+    ["src/pages/**/*", "pages-${1}"]
+  ]
+}
