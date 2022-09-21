@@ -1,9 +1,9 @@
-import { mkdir, readFile, rm, writeFile } from 'fs/promises';
+import { cp, mkdir, readFile, rm, rmdir, writeFile } from 'fs/promises';
 import { globby } from 'globby';
 
 import fbtHashKey from 'babel-plugin-fbt/dist/fbtHashKey.js';
 import { execSync } from 'child_process';
-import { dirname, relative } from 'path';
+import path, { dirname, relative } from 'path';
 
 import config from './fbtrc.json' assert { type: 'json' };
 
@@ -31,39 +31,21 @@ async function run() {
     );
   }
 
+  await rmdir('.cache/next-fbt/translations', { recursive: true, force: true });
+  await mkdir('.cache/next-fbt/translations', { recursive: true });
+
   const files = await globby(process.argv[2] + '/**/*.json', {
     dot: true,
   });
 
-  const fileSystem = {};
-
   for (const file of files) {
-    const crowdinFile = await readFile(file);
-    const crowdin = JSON.parse(crowdinFile.toString());
-
-    for (const [hash, translation] of Object.entries(crowdin.translations)) {
-      const group = hashToGroup[hash];
-      const outputFilepath = `${crowdin['fb-locale']}_${group}`;
-
-      fileSystem[outputFilepath] = {
-        ...crowdin,
-        translations: {
-          ...fileSystem[outputFilepath]?.translations,
-          ...Object.fromEntries([[hash, translation]]),
-        },
-      };
-    }
-  }
-
-  await mkdir('.cache/next-fbt/translations', { recursive: true });
-
-  for (const [filepath, contents] of Object.entries(fileSystem)) {
-    await writeFile(
-      `.cache/next-fbt/translations/${filepath}.json`,
-      JSON.stringify(contents),
-      'utf-8',
+    await cp(
+      file,
+      path.join(
+        '.cache/next-fbt/translations',
+        file.replace(process.argv[2], '').replaceAll('/', '_'),
+      ),
     );
-  }
 
   await execSync('mkdir -p .cache/next-fbt/out', { stdio: 'inherit' });
   await execSync(
@@ -77,7 +59,7 @@ async function run() {
   const translatedFbtsFile = await readFile('.cache/next-fbt/translated-fbts.json');
   const translatedFbts = JSON.parse(translatedFbtsFile.toString());
 
-  let finalFileSystem = {};
+  let fileSystem = {};
 
   for (const [locale, fbts] of Object.entries(translatedFbts)) {
     for (const [fbtHash, translation] of Object.entries(fbts)) {
@@ -86,8 +68,8 @@ async function run() {
 
       const filepath = `${locale}/${group}`;
 
-      finalFileSystem[filepath] = {
-        ...finalFileSystem[filepath],
+      fileSystem[filepath] = {
+        ...fileSystem[filepath],
         ...Object.fromEntries([[fbtHash, translation]]),
       };
     }
@@ -95,14 +77,13 @@ async function run() {
 
   await rm('public/intl', { force: true, recursive: true });
 
-  for (const [filepath, contents] of Object.entries(finalFileSystem)) {
+  for (const [filepath, contents] of Object.entries(fileSystem)) {
     const outFilePath = `public/intl/${filepath}.json`;
 
     await mkdir(dirname(outFilePath), { recursive: true });
     await writeFile(outFilePath, JSON.stringify(contents), 'utf-8');
   }
 
-  // console.log(finalFileSystem);
   console.log('✅ Done!');
 }
 
