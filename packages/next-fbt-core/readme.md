@@ -5,4 +5,4 @@ Please don't use this package on your own.
 
 ---
 
-<small>Sine this package is for internal use, no documentation and support will be provided.</small>
+_Since this package is for internal use, no documentation and support will be provided._

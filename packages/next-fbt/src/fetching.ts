@@ -2,6 +2,9 @@ import type { GetServerSideProps, GetStaticProps } from 'next';
 import { FbtLocale, toFbtLocale, getGroups } from 'next-fbt-core';
 import { config } from './config';
 
+const fetchedFiles: Record<string, boolean> = {};
+const isClientSide = typeof document !== 'undefined';
+
 export async function fetchTranslations({
   locale,
   namespaces,
@@ -11,11 +14,34 @@ export async function fetchTranslations({
 }) {
   const results = await Promise.allSettled(
     (config.defaultLocale === locale ? [] : namespaces).map(async (namespace) => {
-      const res = await fetch(`${config.nextFbt.publicUrl}/i18n/` + locale + `/${namespace}.json`, {
-        method: 'GET',
-      });
+      const pathname = `${locale}/${namespace}.json`;
 
-      return await res.json();
+      // Don't fetch already fetched files.
+      if (isClientSide && pathname in fetchedFiles) {
+        return {};
+      }
+
+      try {
+        const res = await fetch(`${config.nextFbt.publicUrl}/i18n/` + pathname, { method: 'GET' });
+
+        const json = await res.json();
+
+        if (isClientSide) {
+          // Save information that we successfully fetched
+          // the file so we don't fetch it again.
+          fetchedFiles[pathname] = true;
+        }
+
+        return json;
+      } catch (err) {
+        delete fetchedFiles[pathname];
+
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Failed to load translations file: ' + pathname);
+        }
+
+        throw err;
+      }
     }),
   );
 
