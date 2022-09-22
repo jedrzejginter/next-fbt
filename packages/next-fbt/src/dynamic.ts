@@ -21,8 +21,6 @@ export async function fetchTranslationsFromDynamicComponent<P>(mod: Awaited<Load
   const translationsToFetch: string[] =
     anyModule?.default?.translationsToFetch ?? anyModule?.translationsToFetch ?? [];
 
-  console.log(anyModule, translationsToFetch);
-
   const { default: router } =
     typeof window === 'undefined' ? { default: undefined } : await import('next/router');
 
