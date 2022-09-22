@@ -1,6 +1,6 @@
 {
   "name": "next-fbt",
-  "version": "0.2.0",
+  "version": "0.0.0-dev",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -52,8 +52,8 @@
     "react": ">=18"
   },
   "dependencies": {
-    "next-fbt-babel": "*",
-    "next-fbt-core": "*"
+    "next-fbt-babel": "0.0.0-dev",
+    "next-fbt-core": "0.0.0-dev"
   },
   "devDependencies": {
     "@monteway/prettier": "0.0.39",

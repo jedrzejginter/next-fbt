@@ -1,6 +1,6 @@
 {
   "name": "next-fbt-cli",
-  "version": "0.2.0",
+  "version": "0.0.0-dev",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -40,7 +40,7 @@
   "dependencies": {
     "colorette": "^2.0.19",
     "globby": "^13.1.2",
-    "next-fbt-core": "*"
+    "next-fbt-core": "0.0.0-dev"
   },
   "devDependencies": {
     "@monteway/prettier": "0.0.39",
