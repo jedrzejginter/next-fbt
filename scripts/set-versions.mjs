@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from 'fs';
-import { sync as globbySync } from 'globby';
+import { globbySync } from 'globby';
 import path from 'path';
 
 const DEFAULT_VERSION = '0.0.0-dev';
