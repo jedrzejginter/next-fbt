@@ -20,7 +20,7 @@
   },
   "scripts": {
     "package": "npm pack",
-    "publish-npm": "npm publish --aceess public"
+    "publish-npm": "node ../../scripts/publish.mjs"
   },
   "files": [
     "*.js"

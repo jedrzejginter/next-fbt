@@ -21,7 +21,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "package": "npm pack",
-    "publish-npm": "npm publish --aceess public",
+    "publish-npm": "node ../../scripts/publish.mjs",
     "typecheck": "tsc --noEmit"
   },
   "files": [

@@ -55,7 +55,7 @@ jobs:
       - name: Setup Node and install dependencies
         uses: monterail/github-actions/setup-js@main
 
-      - name: Set versions for all our packages
+      - name: Set versions for all published packages
         run: node ${{ github.workspace }}/scripts/set-versions.mjs ${{ steps.release-version.outputs.result }}
 
       - name: Build libraries

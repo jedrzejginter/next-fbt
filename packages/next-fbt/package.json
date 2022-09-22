@@ -39,7 +39,7 @@
     "build": "rm -rf dist && tsc",
     "package": "npm pack",
     "typecheck": "tsc --noEmit",
-    "publish-npm": "npm publish --aceess public"
+    "publish-npm": "node ../../scripts/publish.mjs"
   },
   "files": [
     "dist",
