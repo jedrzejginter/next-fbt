@@ -1,20 +1,31 @@
-import { cp, mkdir, readFile, rm, rmdir, writeFile } from 'fs/promises';
+#!/usr/bin/env node
+
+import { cp, mkdir, readFile, rm, writeFile } from 'fs/promises';
 import { globby } from 'globby';
+import { createHash } from 'crypto';
 
 import fbtHashKey from 'babel-plugin-fbt/dist/fbtHashKey.js';
 import { execSync } from 'child_process';
-import path, { dirname, relative } from 'path';
+import path, { dirname } from 'path';
 
-import config from './fbtrc.json' assert { type: 'json' };
+import { getGroup } from './lib-utils.js';
+
+const sha256 = (x: string) => createHash('sha256').update(x, 'utf8').digest('hex');
 
 async function run() {
-  const { getGroup } = await import('./dist/lib/lib-utils.mjs');
+  const sourceTranslationsDir = process.argv[2];
+
+  if (!sourceTranslationsDir) {
+    throw new Error('Missing required argument for translations directory');
+  }
+
+  const config = await import(path.join(process.cwd(), 'next-fbt.config.js'));
 
   const sourceStringsFile = await readFile('.cache/next-fbt/source-strings.json');
   const sourceStrings = JSON.parse(sourceStringsFile.toString());
 
-  let hashToGroup = {};
-  let fbtHashToHash = {};
+  let hashToGroup: Record<string, string> = {};
+  let fbtHashToHash: Record<string, string> = {};
 
   for (const phrase of sourceStrings.phrases) {
     const group = getGroup(phrase, config.NEXT_PUBLIC_FBT_PATTERNS);
@@ -31,24 +42,18 @@ async function run() {
     );
   }
 
-  await rmdir('.cache/next-fbt/translations', { recursive: true, force: true });
+  await rm('.cache/next-fbt/translations', { force: true, recursive: true });
   await mkdir('.cache/next-fbt/translations', { recursive: true });
 
-  const files = await globby(process.argv[2] + '/**/*.json', {
+  const files = await globby(sourceTranslationsDir + '/**/*.json', {
     dot: true,
   });
 
-  for (const file of files) {
-    await cp(
-      file,
-      path.join(
-        '.cache/next-fbt/translations',
-        file.replace(process.argv[2], '').replaceAll('/', '_'),
-      ),
-    );
+  for await (const file of files) {
+    await cp(file, path.join('.cache/next-fbt/translations', sha256(file) + '.json'));
+  }
 
-  await execSync('mkdir -p .cache/next-fbt/out', { stdio: 'inherit' });
-  await execSync(
+  execSync(
     'npx fbt-translate --translations .cache/next-fbt/translations/*.json --source-strings .cache/next-fbt/source-strings.json --jenkins > .cache/next-fbt/translated-fbts.json',
     { stdio: 'inherit' },
   );
@@ -57,14 +62,14 @@ async function run() {
   console.log(fbtHashToHash);
 
   const translatedFbtsFile = await readFile('.cache/next-fbt/translated-fbts.json');
-  const translatedFbts = JSON.parse(translatedFbtsFile.toString());
+  const translatedFbts: Record<string, any> = JSON.parse(translatedFbtsFile.toString());
 
-  let fileSystem = {};
+  let fileSystem: Record<string, any> = {};
 
   for (const [locale, fbts] of Object.entries(translatedFbts)) {
     for (const [fbtHash, translation] of Object.entries(fbts)) {
       const sourceHash = fbtHashToHash[fbtHash];
-      const group = hashToGroup[sourceHash];
+      const group = hashToGroup[sourceHash!];
 
       const filepath = `${locale}/${group}`;
 
@@ -76,8 +81,9 @@ async function run() {
   }
 
   await rm('public/intl', { force: true, recursive: true });
+  await mkdir('public/intl', { recursive: true });
 
-  for (const [filepath, contents] of Object.entries(fileSystem)) {
+  for await (const [filepath, contents] of Object.entries(fileSystem)) {
     const outFilePath = `public/intl/${filepath}.json`;
 
     await mkdir(dirname(outFilePath), { recursive: true });

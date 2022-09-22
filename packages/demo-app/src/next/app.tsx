@@ -1,5 +1,4 @@
-import { FbtProps } from '@/pages/home/lib';
-import { Provider } from '@/pages/home/lib-react';
+import { Provider, FbtProps } from 'next-fbt';
 import { isErrorProps } from '@monteway/nextjs/error';
 import type { AppProps } from '@monteway/nextjs/types';
 

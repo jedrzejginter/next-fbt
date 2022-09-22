@@ -1,19 +1,25 @@
 import * as path from 'path';
 import micromatch from 'micromatch';
+import { env } from './lib-env.js';
 
-const defaultPairs: [/* regex */ string, /* group */ string][] = JSON.parse(
-  process.env['NEXT_PUBLIC_FBT_PATTERNS'] || '[]',
-);
+export type FbtLocale = string & { __FBT_LOCALE__: never };
+type NextLocale = string & { __NEXT_LOCALE__: never };
 
-// aa
+export function toFbtLocale(locale: string): FbtLocale {
+  return locale.replace('-', '_') as FbtLocale;
+}
+
+export function toNextLocale(locale: string): NextLocale {
+  return locale.replace('_', '-') as NextLocale;
+}
 
 export function getGroups(
   item: string | { filepath: string },
-  matchPairs = defaultPairs,
+  matchPairs = env.FBT_PATTERNS,
 ): string[] {
   const filepath = typeof item === 'string' ? new URL(item).pathname : item.filepath;
-  const relativeFilepath = path.relative(process.env['NEXT_PUBLIC_FBT_ROOT_DIR'] || '', filepath);
-  const calculatedGroups = [];
+  const relativeFilepath = path.relative(env.ROOT_DIR, filepath);
+  const calculatedGroups: string[] = [];
 
   for (const [pattern, group] of matchPairs) {
     const captured = micromatch.capture(pattern, relativeFilepath);
@@ -38,6 +44,9 @@ export function getGroups(
   return calculatedGroups;
 }
 
-export function getGroup(item: string | { filepath: string }, matchPairs = defaultPairs): string {
+export function getGroup(
+  item: string | { filepath: string },
+  matchPairs = env.FBT_PATTERNS,
+): string {
   return getGroups(item, matchPairs)[0] || 'main';
 }

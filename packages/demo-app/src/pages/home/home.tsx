@@ -1,12 +1,11 @@
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useState } from 'react';
-import { FbtProps, withFbtIntl, getFbts } from './lib';
-import { useNextFbt } from './lib-react';
+import { useNextFbt, withFbtIntl, getFbts } from 'next-fbt';
 
 const Component = dynamic(() => import('./comp').then(getFbts), { ssr: false });
 
-function HomePage(p: FbtProps) {
+function HomePage() {
   const [count, setCount] = useState(1);
   const name = 'Adam';
 
@@ -45,4 +44,4 @@ function HomePage(p: FbtProps) {
 
 export default HomePage;
 
-export const { getServerSideProps } = withFbtIntl({ filepath: import.meta.url });
+export const { getServerSideProps } = withFbtIntl(import.meta.url);

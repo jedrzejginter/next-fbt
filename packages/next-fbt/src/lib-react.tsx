@@ -2,15 +2,17 @@ import { createContext, useCallback, useContext, useMemo } from 'react';
 import { IntlVariations, init, FbtTranslations } from 'fbt';
 import { useRouter } from 'next/router';
 import { useRef } from 'react';
-import { FbtProps, DEFAULT_LOCALE, fetchForDynamicComponenents, toFbtLocale } from './lib';
+import { FbtProps, fetchForDynamicComponenents } from './lib.js';
+import { FbtLocale, toFbtLocale } from './lib-utils.js';
+import { env } from './lib-env.js';
 
 const viewerContext = {
   GENDER: IntlVariations.GENDER_UNKNOWN as const,
-  locale: DEFAULT_LOCALE,
+  locale: env.DEFAULT_LOCALE,
 };
 
 const Context = createContext<{
-  locale: string;
+  locale: FbtLocale;
   setLocale: (newLocale: string) => void;
 }>({
   locale: viewerContext.locale,
@@ -23,7 +25,7 @@ function Provider(
   props: Partial<FbtProps>,
 ) {
   const router = useRouter();
-  const locale = router.locale?.replace('-', '_') || DEFAULT_LOCALE;
+  const locale = toFbtLocale(router.locale || env.DEFAULT_LOCALE);
 
   const isInitRef = useRef(false);
   const localeRef = useRef(locale);

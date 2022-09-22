@@ -1,4 +1,4 @@
-import { withFbtIntlComponent } from './lib';
+import { withFbtIntlComponent } from 'next-fbt';
 
 export default function Component() {
   return (

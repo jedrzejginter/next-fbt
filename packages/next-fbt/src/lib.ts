@@ -1,19 +1,11 @@
 import { FbtTranslations } from 'fbt';
 import type { GetServerSideProps } from 'next';
-import { getGroups } from './lib-utils';
+import { FbtLocale, getGroups, toFbtLocale } from './lib-utils.js';
+import { env } from './lib-env.js';
 
-export const DEFAULT_LOCALE = process.env['NEXT_PUBLIC_FBT_DEFAULT_LOCALE'] || 'en_US';
+const DEFAULT_LOCALE = env.DEFAULT_LOCALE;
 
-type FbtLocale = string & { __FBT_LOCALE__: never };
-type NextLocale = string & { __NEXT_LOCALE__: never };
 
-export function toFbtLocale(locale: string): FbtLocale {
-  return locale.replace('-', '_') as FbtLocale;
-}
-
-export function toNextLocale(locale: string): NextLocale {
-  return locale.replace('_', '-') as NextLocale;
-}
 
 async function fetchTranslations({
   locale,
@@ -24,10 +16,9 @@ async function fetchTranslations({
 }) {
   const results = await Promise.allSettled(
     (DEFAULT_LOCALE === locale ? [] : namespaces).map(async (namespace) => {
-      const res = await fetch(
-        `${process.env['NEXT_PUBLIC_FBT_INTL_URL']}/intl/` + locale + `/${namespace}.json`,
-        { method: 'GET' },
-      );
+      const res = await fetch(`${env.PUBLIC_URL}/intl/` + locale + `/${namespace}.json`, {
+        method: 'GET',
+      });
 
       return await res.json();
     }),
