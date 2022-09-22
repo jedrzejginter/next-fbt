@@ -1,23 +1,24 @@
 {
-  "name": "fbt-test",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "name": "next-fbt-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jedrzejginter/next-fbt.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "homepage": "https://github.com/jedrzejginter/next-fbt#readme",
   "bugs": {
     "url": "https://github.com/jedrzejginter/next-fbt/issues"
   },
-  "homepage": "https://github.com/jedrzejginter/next-fbt#readme",
+  "devDependencies": {
+    "@monteway/prettier": "0.0.39"
+  },
+  "overrides": {
+    "react": "18.2.0"
+  },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "demo-app"
   ]
 }

@@ -1,39 +1,27 @@
 {
   "name": "next-fbt",
-  "version": "0.0.0-dev",
-  "private": true,
+  "version": "0.0.0",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/jedrzejginter/next-fbt.git"
   },
-  "author": "Monterail <hello@monterail.com> (https://monterail.com)",
+  "author": "Jedrzej Ginter <dzeejj@gmail.com>",
   "homepage": "https://github.com/jedrzejginter/next-fbt#readme",
   "bugs": {
     "url": "https://github.com/jedrzejginter/next-fbt/issues",
-    "email": "hello@monterail.com"
+    "email": "dzeejj@gmail.com"
   },
-  "type": "module",
+  "main": "./dist/index.js",
   "bin": {
     "next-fbt-collect": "./fbt.sh",
     "next-fbt-translate": "./dist/group.js"
   },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "type": "module",
   "exports": {
     ".": "./dist/index.js",
     "./next": {
       "import": "./dist/lib-with-next-fbt.js"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "/": [
-        "./dist/index.d.ts"
-      ],
-      "/next": [
-        "./dist/lib-with-next-fbt.d.ts"
-      ]
     }
   },
   "engines": {
@@ -45,16 +33,38 @@
     "typecheck": "tsc --noEmit"
   },
   "files": [
+    "babel.js",
     "dist",
+    "fbt.sh",
     "package.json",
     "readme.md"
   ],
   "peerDependencies": {
+    "fbt": "^1.0.0",
     "next": ">=12",
     "react": ">=18"
   },
+  "dependencies": {
+    "babel-preset-next-fbt": "*",
+    "colorette": "^2.0.19",
+    "globby": "^13.1.2",
+    "micromatch": "^4.0.5"
+  },
   "devDependencies": {
     "@monteway/prettier": "0.0.39",
+    "@types/fbt": "0.16.3",
+    "@types/micromatch": "4.0.2",
     "prettier": "2.7.1"
+  },
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "/": [
+        "./dist/index.d.ts"
+      ],
+      "/next": [
+        "./dist/lib-with-next-fbt.d.ts"
+      ]
+    }
   }
 }

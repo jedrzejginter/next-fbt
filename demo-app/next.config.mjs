@@ -1,8 +1,7 @@
-import { compose } from '@monteway/nextjs/config.js';
 import * as envalid from 'envalid';
 import { withNextFbt } from 'next-fbt/next';
 
-import nextFbtConfig from './next-fbt.config.js';
+import nextFbtConfig from './next-fbt.config.mjs';
 
 import 'dotenv/config';
 
@@ -46,7 +45,5 @@ const nextConfig = withNextFbt({
     return config;
   },
 });
-
-console.log(nextConfig);
 
 export default nextConfig;

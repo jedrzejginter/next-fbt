@@ -5,8 +5,6 @@ import { env } from './lib-env.js';
 
 const DEFAULT_LOCALE = env.DEFAULT_LOCALE;
 
-
-
 async function fetchTranslations({
   locale,
   namespaces,
@@ -16,7 +14,7 @@ async function fetchTranslations({
 }) {
   const results = await Promise.allSettled(
     (DEFAULT_LOCALE === locale ? [] : namespaces).map(async (namespace) => {
-      const res = await fetch(`${env.PUBLIC_URL}/intl/` + locale + `/${namespace}.json`, {
+      const res = await fetch(`${env.PUBLIC_URL}/i18n/` + locale + `/${namespace}.json`, {
         method: 'GET',
       });
 
@@ -39,7 +37,7 @@ async function fetchTranslations({
 }
 
 export type FbtProps = {
-  __FBT_PROPS__: {
+  __NEXT_FBT_PROPS__: {
     namespaces: string[];
     locale: string;
     translations: Record<string, Record<string, unknown>>;
@@ -59,7 +57,7 @@ async function getProps(
   const translations = await fetchTranslations({ locale, namespaces });
 
   return {
-    __FBT_PROPS__: {
+    __NEXT_FBT_PROPS__: {
       namespaces,
       locale,
       translations,
@@ -82,7 +80,7 @@ export function withFbtIntlComponent(input: string | { filepath: string }) {
       typeof input === 'string' ? { filepath: input } : input,
     );
 
-    return props.__FBT_PROPS__.translations;
+    return props.__NEXT_FBT_PROPS__.translations;
   }
 
   function translationsToFetch() {

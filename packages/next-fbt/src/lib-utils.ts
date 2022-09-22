@@ -1,6 +1,7 @@
 import * as path from 'path';
 import micromatch from 'micromatch';
 import { env } from './lib-env.js';
+import type { NextFbtConfig } from './types.js';
 
 export type FbtLocale = string & { __FBT_LOCALE__: never };
 type NextLocale = string & { __NEXT_LOCALE__: never };
@@ -15,13 +16,13 @@ export function toNextLocale(locale: string): NextLocale {
 
 export function getGroups(
   item: string | { filepath: string },
-  matchPairs = env.FBT_PATTERNS,
+  runtimeConfig?: NextFbtConfig & { rootDir: string },
 ): string[] {
   const filepath = typeof item === 'string' ? new URL(item).pathname : item.filepath;
-  const relativeFilepath = path.relative(env.ROOT_DIR, filepath);
+  const relativeFilepath = path.relative(runtimeConfig?.rootDir ?? env.ROOT_DIR, filepath);
   const calculatedGroups: string[] = [];
 
-  for (const [pattern, group] of matchPairs) {
+  for (const [pattern, group] of runtimeConfig?.patterns ?? env.FBT_PATTERNS) {
     const captured = micromatch.capture(pattern, relativeFilepath);
 
     if (captured) {
@@ -46,7 +47,7 @@ export function getGroups(
 
 export function getGroup(
   item: string | { filepath: string },
-  matchPairs = env.FBT_PATTERNS,
+  runtimeConfig?: NextFbtConfig & { rootDir: string },
 ): string {
-  return getGroups(item, matchPairs)[0] || 'main';
+  return getGroups(item, runtimeConfig)[0] || 'main';
 }

@@ -1,0 +1,39 @@
+{
+  "name": "babel-preset-next-fbt",
+  "version": "0.0.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jedrzejginter/next-fbt.git"
+  },
+  "author": "Jedrzej Ginter <dzeejj@gmail.com>",
+  "homepage": "https://github.com/jedrzejginter/next-fbt#readme",
+  "bugs": {
+    "url": "https://github.com/jedrzejginter/next-fbt/issues",
+    "email": "dzeejj@gmail.com"
+  },
+  "main": "./index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": "^16.16",
+    "npm": "^8.19.1"
+  },
+  "files": [
+    "index.js"
+  ],
+  "peerDependencies": {
+    "@babel/core": ">=7",
+    "fbt": "^1.0.0",
+    "next": ">=12"
+  },
+  "dependencies": {
+    "babel-plugin-fbt": "^1.0.0",
+    "babel-plugin-fbt-import": "^0.1.0",
+    "babel-plugin-fbt-runtime": "^1.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.19.1",
+    "@monteway/prettier": "0.0.39",
+    "prettier": "2.7.1"
+  }
+}

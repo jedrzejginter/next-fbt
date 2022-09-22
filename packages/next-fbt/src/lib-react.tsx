@@ -31,11 +31,10 @@ function Provider(
   const localeRef = useRef(locale);
 
   if (locale !== localeRef.current) {
-    console.log('Merging', props);
     localeRef.current = locale;
 
     viewerContext.locale = locale;
-    FbtTranslations.mergeTranslations(props.__FBT_PROPS__?.translations ?? {});
+    FbtTranslations.mergeTranslations(props.__NEXT_FBT_PROPS__?.translations ?? {});
   }
 
   if (!isInitRef.current) {
@@ -43,7 +42,7 @@ function Provider(
     viewerContext.locale = locale;
 
     init({
-      translations: props.__FBT_PROPS__?.translations ?? {},
+      translations: props.__NEXT_FBT_PROPS__?.translations ?? {},
       hooks: {
         getViewerContext: () => viewerContext,
       },

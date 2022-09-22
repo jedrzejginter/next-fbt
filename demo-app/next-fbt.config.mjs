@@ -1,4 +1,5 @@
-module.exports = {
+/** @type {import('next-fbt').Config} */
+export default {
   i18n: {
     // These are all the locales you want to support in
     // your application
@@ -12,7 +13,7 @@ module.exports = {
       publicUrl: 'http://localhost:3000',
       patterns: [
         ['src/pages/home/comp.tsx', 'pages-comp'],
-        ['src/pages/**/*', 'pages-${1}'],
+        ['src/pages/**/*', 'pages-$1'],
       ],
     },
   },
