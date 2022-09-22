@@ -11,8 +11,13 @@
   "bugs": {
     "url": "https://github.com/jedrzejginter/next-fbt/issues"
   },
+  "scripts": {
+    "build": "turbo run build",
+    "package": "turbo run package"
+  },
   "devDependencies": {
-    "@monteway/prettier": "0.0.39"
+    "@monteway/prettier": "0.0.39",
+    "turbo": "1.5.1"
   },
   "overrides": {
     "react": "18.2.0"

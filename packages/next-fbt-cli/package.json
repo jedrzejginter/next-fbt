@@ -1,5 +1,5 @@
 {
-  "name": "next-fbt",
+  "name": "next-fbt-cli",
   "version": "0.2.0",
   "license": "MIT",
   "repository": {
@@ -12,25 +12,11 @@
     "url": "https://github.com/jedrzejginter/next-fbt/issues",
     "email": "dzeejj@gmail.com"
   },
-  "main": "./dist/index.js",
-  "type": "commonjs",
-  "exports": {
-    ".": {
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./config": {
-      "import": "./dist/next-config.js",
-      "require": "./dist/next-config.js",
-      "types": "./dist/next-config.d.ts"
-    },
-    "./dynamic": {
-      "import": "./dist/dynamic.js",
-      "require": "./dist/dynamic.js",
-      "types": "./dist/dynamic.d.ts"
-    }
+  "bin": {
+    "next-fbt-collect": "./fbt.sh",
+    "next-fbt-translate": "./dist/cli.js"
   },
+  "type": "module",
   "engines": {
     "node": "^16.16",
     "npm": "^8.19.1"
@@ -38,28 +24,28 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "package": "npm pack",
-    "typecheck": "tsc --noEmit",
-    "publish-npm": "npm publish --aceess public"
+    "publish-npm": "npm publish --aceess public",
+    "typecheck": "tsc --noEmit"
   },
   "files": [
     "dist",
+    "fbt.sh",
     "package.json",
     "readme.md"
   ],
   "peerDependencies": {
-    "fbt": "^1.0.0",
-    "next": ">=12",
-    "react": ">=18"
+    "babel-plugin-fbt": "^1.0.0",
+    "fbt": "^1.0.0"
   },
   "dependencies": {
-    "next-fbt-babel": "*",
+    "colorette": "^2.0.19",
+    "globby": "^13.1.2",
     "next-fbt-core": "*"
   },
   "devDependencies": {
     "@monteway/prettier": "0.0.39",
     "@monteway/typescript": "0.0.39",
     "@types/fbt": "0.16.3",
-    "next": "12.3.1",
     "prettier": "2.7.1"
   }
 }

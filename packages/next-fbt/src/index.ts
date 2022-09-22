@@ -1,4 +1,5 @@
-export * from './lib.js';
-export * from './lib-react.js';
-export * from './lib-utils.js';
-export type { Config } from './types';
+export { withFbtIntl, getTranslationsForComponent, assignTranslations } from './fetching';
+export type { NextFbtProps } from './fetching';
+
+export { NextFbtProvider, useNextFbt, appWithNextFbt } from './context';
+export { NextFbtLocaleSwitcher } from './locale-switcher';
