@@ -13,10 +13,14 @@
   },
   "scripts": {
     "build": "turbo run build",
+    "publish-npm": "turbo run publish-npm",
     "package": "turbo run package"
   },
   "devDependencies": {
     "@monteway/prettier": "0.0.39",
+    "chalk": "5.0.1",
+    "globby": "13.1.2",
+    "is-ci": "3.0.1",
     "turbo": "1.5.1"
   },
   "overrides": {

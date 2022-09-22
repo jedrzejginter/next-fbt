@@ -1,0 +1,77 @@
+name: release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag-name:
+        description: 'Version to release'
+        required: true
+        default: '0.0.0-dev'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+    steps:
+      - name: Get git tag
+        id: git-tag
+        run: |
+          echo "::set-output name=tag::${{ github.event_name == 'release' && github.event.release.tag_name || github.event.inputs.tag-name || '0.0.0-dev' }}"
+
+      - name: Get release version
+        uses: actions/github-script@v6
+        id: release-version
+        with:
+          result-encoding: string
+          script: |
+            const releaseVersion = "${{ steps.git-tag.outputs.tag }}";
+
+            if (!/^\d+\.\d+\.\d+(-\w+\.\d+)?/.test(releaseVersion)) {
+              throw new Error(`Invalid version: ${releaseVersion}`);
+            }
+
+            return releaseVersion;
+
+      - name: Get release tag
+        uses: actions/github-script@v6
+        id: release-tag
+        with:
+          result-encoding: string
+          script: |
+            const releaseTag = "${{ steps.git-tag.outputs.tag }}";
+
+            return /-(rc|alpha|beta)/i.test(releaseTag) ? "next" : "latest";
+
+      - name: Cancel outdated workflows
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.git-tag.outputs.tag }}
+
+      - name: Setup Node and install dependencies
+        uses: monterail/github-actions/setup-js@main
+
+      - name: Set versions for all our packages
+        run: node ${{ github.workspace }}/scripts/set-versions.mjs ${{ steps.release-version.outputs.result }}
+
+      - name: Build libraries
+        run: npm run build
+
+      - name: Remove .npmrc
+        run: rm -f .npmrc
+
+      - name: Configure npm to accept token from env var
+        run: npm config set "//registry.npmjs.org/:_authToken" "${{ secrets.NPM_TOKEN }}"
+
+      - name: Publish packages to npm
+        run: npm run publish-npm
+        env:
+          NPM_TAG: ${{ steps.release-tag.outputs.result }}
+          REGISTRY: npm
