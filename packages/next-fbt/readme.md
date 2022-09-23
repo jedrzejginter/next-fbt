@@ -148,7 +148,7 @@ module.exports = {
 
    </details>
 
-# Collecting FBT's for translations
+## Collecting FBT's for translations
 
 ```shell
 npx next-fbt-collect
@@ -156,7 +156,7 @@ npx next-fbt-collect
 
 This will output `.cache/next-fbt/source-strings.json` file which you can upload to translations service that supports translating FBT's (like Crowdin).
 
-# Creating translation files
+## Creating translation files
 
 After you translate the source string to other languages, download the translations to `/path/to/downloaded` and run
 
