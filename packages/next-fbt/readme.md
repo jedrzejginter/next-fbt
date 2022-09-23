@@ -31,8 +31,9 @@
 
      // Configuration for 'next-fbt' and 'next-fbt-cli'.
      nextFbt: {
-       // The root url your frontend app runs on
-       publicUrl: 'http://localhost:3000',
+       // The root url your want your translation
+       // files to be served from
+       publicUrl: 'http://localhost:3000/i18n',
        // Split translations by file path (relative to the CWD).
        // Must be array of [string, string[]]
        patterns: [

@@ -14,6 +14,7 @@ export type NextFbtInternalConfig = Required<Omit<NextFbtConfig, 'patterns'>> & 
   defaultLocale: string;
   locales?: string[];
   defaultGroup: string;
+  publicDir: string;
 };
 
 export type Config = {

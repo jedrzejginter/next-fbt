@@ -101,11 +101,13 @@ async function run() {
     }
   }
 
-  await rm('public/i18n', { force: true, recursive: true });
-  await mkdir('public/i18n', { recursive: true });
+  const distDir = join('public', runtimeConfig.publicDir);
+
+  await rm(distDir, { force: true, recursive: true });
+  await mkdir(distDir, { recursive: true });
 
   for await (const [filepath, contents] of Object.entries(fileSystem)) {
-    const outFilePath = `public/i18n/${filepath}.json`;
+    const outFilePath = join(distDir, `${filepath}.json`);
 
     await mkdir(dirname(outFilePath), { recursive: true });
     await writeFile(outFilePath, JSON.stringify(contents), 'utf-8');

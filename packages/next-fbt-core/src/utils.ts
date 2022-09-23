@@ -42,6 +42,8 @@ export function configToInternalConfig(config: Config): NextFbtInternalConfig {
     return groupPatterns.map((groupPatterns) => [groupPatterns, group] as [string, string]);
   });
 
+  const publicDir = new URL(config.nextFbt.publicUrl).pathname;
+
   return {
     ...{
       defaultGroup: 'main',
@@ -49,6 +51,7 @@ export function configToInternalConfig(config: Config): NextFbtInternalConfig {
     },
     ...config.i18n,
     ...config.nextFbt,
+    publicDir,
     patterns,
   };
 }

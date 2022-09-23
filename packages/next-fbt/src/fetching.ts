@@ -22,7 +22,7 @@ export async function fetchTranslations({
       }
 
       try {
-        const res = await fetch(`${config.publicUrl}/i18n/` + pathname, { method: 'GET' });
+        const res = await fetch(`${config.publicUrl}/${pathname}`, { method: 'GET' });
 
         const json = await res.json();
 
