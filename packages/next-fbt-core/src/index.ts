@@ -1,2 +1,2 @@
-export { getGroup, getGroups, toFbtLocale, toNextLocale } from './utils';
-export type { Config, NextFbtConfig, FbtLocale, NextLocale } from './types';
+export { getGroup, getGroups, toFbtLocale, toNextLocale, configToInternalConfig } from './utils';
+export type { Config, NextFbtConfig, NextFbtInternalConfig, FbtLocale, NextLocale } from './types';

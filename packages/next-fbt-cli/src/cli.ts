@@ -8,7 +8,7 @@ import { execSync } from 'child_process';
 import { join, dirname } from 'path';
 import { existsSync } from 'fs';
 import { globby } from 'globby';
-import { Config, getGroup } from 'next-fbt-core';
+import { Config, getGroup, NextFbtInternalConfig, configToInternalConfig } from 'next-fbt-core';
 
 function sha256(x: string) {
   return createHash('sha256').update(x, 'utf8').digest('hex');
@@ -43,10 +43,7 @@ async function run() {
   }
 
   // Add rootDir if it's not there.
-  const runtimeConfig = {
-    ...{ rootDir: process.cwd() },
-    ...config.i18n.nextFbt,
-  };
+  const runtimeConfig: NextFbtInternalConfig = configToInternalConfig(config);
 
   const sourceStringsFile = await readFile('.cache/next-fbt/source-strings.json');
   const sourceStrings = JSON.parse(sourceStringsFile.toString());
@@ -72,7 +69,7 @@ async function run() {
   await rm('.cache/next-fbt/translations', { force: true, recursive: true });
   await mkdir('.cache/next-fbt/translations', { recursive: true });
 
-  const files = await globby(sourceTranslationsDir + '/**/*.json', {
+  const files = await globby(join(sourceTranslationsDir, '/**/*.json'), {
     dot: true,
   });
 

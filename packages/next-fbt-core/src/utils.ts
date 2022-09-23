@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import type { FbtLocale, NextFbtConfig, NextLocale } from './types';
+import type { Config, FbtLocale, NextFbtInternalConfig, NextLocale } from './types';
 
 export function toFbtLocale(locale: string): FbtLocale {
   return locale.replace('-', '_') as FbtLocale;
@@ -10,25 +10,45 @@ export function toNextLocale(locale: string): NextLocale {
   return locale.replace('_', '-') as NextLocale;
 }
 
-export function getGroups(item: string | { filepath: string }, config: NextFbtConfig): string[] {
+export function getGroups(
+  item: string | { filepath: string },
+  config: NextFbtInternalConfig,
+): string[] {
   const filepath = typeof item === 'string' ? new URL(item).pathname : item.filepath;
   const relativeFilepath = path.relative(config.rootDir, filepath);
   const calculatedGroups: string[] = [];
 
   for (const [pattern, group] of config.patterns) {
-    const re = new RegExp(`^${pattern.replace('*', '(.*)')}$`, 'i');
-    const captured = relativeFilepath.match(re);
+    const regExp = new RegExp(`^${pattern.replace('*', '(.*)')}$`, 'i');
+    const match = relativeFilepath.match(regExp);
 
-    if (captured !== null) {
-      const delim: string = (group.includes('-') && '-') || '_';
-
-      calculatedGroups.push(group.replaceAll('/', delim));
+    if (match !== null) {
+      calculatedGroups.push(group);
     }
   }
 
   return calculatedGroups;
 }
 
-export function getGroup(item: string | { filepath: string }, config: NextFbtConfig): string {
-  return getGroups(item, config)[0] || 'main';
+export function getGroup(
+  item: string | { filepath: string },
+  config: NextFbtInternalConfig,
+): string {
+  return getGroups(item, config)[0] || config.defaultGroup;
+}
+
+export function configToInternalConfig(config: Config): NextFbtInternalConfig {
+  const patterns: [string, string][] = config.nextFbt.patterns.flatMap(([group, groupPatterns]) => {
+    return groupPatterns.map((groupPatterns) => [groupPatterns, group] as [string, string]);
+  });
+
+  return {
+    ...{
+      defaultGroup: 'main',
+      rootDir: process.cwd(),
+    },
+    ...config.i18n,
+    ...config.nextFbt,
+    patterns,
+  };
 }
