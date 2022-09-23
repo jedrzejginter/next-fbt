@@ -1,1 +1,1 @@
-# next-fbt
+./packages/next-fbt/readme.md

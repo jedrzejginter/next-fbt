@@ -41,6 +41,17 @@
     "typecheck": "tsc --noEmit",
     "publish-npm": "node ../../scripts/publish.mjs"
   },
+  "keywords": [
+    "next",
+    "fbt",
+    "next fbt",
+    "fbt next",
+    "translations",
+    "i18n",
+    "locales",
+    "languages",
+    "internationalization"
+  ],
   "files": [
     "dist",
     "package.json",

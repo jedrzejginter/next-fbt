@@ -22,7 +22,7 @@ export async function fetchTranslations({
       }
 
       try {
-        const res = await fetch(`${config.nextFbt.publicUrl}/i18n/` + pathname, { method: 'GET' });
+        const res = await fetch(`${config.publicUrl}/${pathname}`, { method: 'GET' });
 
         const json = await res.json();
 
@@ -75,7 +75,7 @@ async function getProps(
   input: { filepath: string },
 ): Promise<NextFbtProps> {
   const locale = toFbtLocale(ctx.locale || ctx.defaultLocale || config.defaultLocale);
-  const namespaces = getGroups(input.filepath, config.nextFbt);
+  const namespaces = getGroups(input.filepath, config);
 
   const translations = await fetchTranslations({ locale, namespaces });
 
@@ -103,7 +103,7 @@ export function withFbtIntl(input: string | { filepath: string }) {
 export function getTranslationsForComponent(input: string | { filepath: string }) {
   const translationsToFetch = getGroups(
     (typeof input === 'string' ? { filepath: input } : input).filepath,
-    config.nextFbt,
+    config,
   );
 
   return { translationsToFetch };

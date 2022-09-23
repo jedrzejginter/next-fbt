@@ -1,26 +1,25 @@
 import type { NextConfig } from 'next';
-import type { Config } from 'next-fbt-core';
+import { Config, configToInternalConfig, NextFbtInternalConfig } from 'next-fbt-core';
 
-export function withNextFbtConfig(nextConfig: NextConfig & Config): NextConfig {
-  if (!('i18n' in nextConfig) || !('nextFbt' in nextConfig.i18n)) {
-    throw new Error('Missing required configuration for `i18n` property on NextConfig');
+export function withNextFbtConfig(nextConfigWithFbt: NextConfig & Config): NextConfig {
+  if (!('i18n' in nextConfigWithFbt) || !('nextFbt' in nextConfigWithFbt)) {
+    throw new Error(
+      'Missing required configuration for `i18n` or/and `nextFbt` property on NextConfig',
+    );
   }
 
-  const { nextFbt, ...i18n } = nextConfig.i18n;
+  // Remove `nextFbt` from next config, so we don't get warning
+  // about invalid property (Next started reporting it from some 12.x version).
+  const { nextFbt: _, ...nextConfig } = nextConfigWithFbt;
 
-  const overwrite: Partial<NextConfig> = {
-    i18n,
+  const runtimeConfig: NextFbtInternalConfig = configToInternalConfig(nextConfigWithFbt);
+
+  const nextConfigOverride: Partial<NextConfig> = {
     publicRuntimeConfig: {
       ...nextConfig.publicRuntimeConfig,
-      __NEXT_FBT__: {
-        ...nextConfig.i18n,
-        nextFbt: {
-          ...{ rootDir: process.cwd() },
-          ...nextFbt,
-        },
-      },
+      __NEXT_FBT__: runtimeConfig,
     },
   };
 
-  return Object.assign({}, nextConfig, overwrite);
+  return Object.assign({}, nextConfig, nextConfigOverride);
 }
