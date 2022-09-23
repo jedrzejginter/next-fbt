@@ -19,23 +19,26 @@
      // Regular configuration for `i18n` key for Next's config.
      i18n: {
        // These are all the locales you want to support in
-       // your application
+       // your application.
        locales: ['en-US', 'pl-PL', 'es-ES'],
        // This is the default locale you want to be used when visiting
-       // a non-locale prefixed path e.g. `/hello`
+       // a non-locale prefixed path e.g. `/hello`.
        defaultLocale: 'en-US',
        // Always use the locale that is specified in url
-       // without redirecting to the one detected by the browser
+       // without redirecting to the one detected by the browser.
        localeDetection: false,
      },
 
      // Configuration for 'next-fbt' and 'next-fbt-cli'.
      nextFbt: {
        // The root url your want your translation
-       // files to be served from
+       // files to be served from.
+       // The pathname of `publicUrl` (here `i18n`) determines
+       // the directory name (inside ./public) where files with translations
+       // will be put.
        publicUrl: 'http://localhost:3000/i18n',
        // Split translations by file path (relative to the CWD).
-       // Must be array of [string, string[]]
+       // Must be array of [string, string[]].
        patterns: [
          // Example:
          ['components', ['src/components/*']],
