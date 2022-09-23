@@ -7,7 +7,7 @@
 1. Install.
 
    ```shell
-   npm install next-fbt next-fbt-cli
+   npm install next-fbt next-fbt-cli next-fbt-babel
    ```
 
 2. Create `next-fbt.config.js`.
@@ -54,7 +54,17 @@
    };
    ```
 
-3. Wrap next config and pass options.
+3. Update Babel config.
+
+```diff
+module.exports = {
+-  presets: ['next/babel'],
++  presets: ['next-fbt-babel/preset'],
++  plugins: ['next-fbt-babel/plugin'],
+};
+```
+
+4. Wrap next config and pass options.
 
    ```js
    // next-config.js
@@ -91,7 +101,7 @@
 
    </details>
 
-4. Wrap app with provider.
+5. Wrap app with provider.
 
    ```tsx
    // pages/_app.tsx
