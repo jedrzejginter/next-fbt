@@ -7,7 +7,8 @@
 1. Install.
 
    ```shell
-   npm install next-fbt next-fbt-cli next-fbt-babel
+   npm install next-fbt
+   npm install -D next-fbt-cli next-fbt-babel
    ```
 
 2. Create `next-fbt.config.js`.
