@@ -18,7 +18,7 @@ export function getGroups(
   const relativeFilepath = path.relative(config.rootDir, filepath);
   const calculatedGroups: string[] = [];
 
-  for (const [pattern, group] of config.patterns) {
+  for (const [pattern, group] of config.groups) {
     const regExp = new RegExp(`^${pattern.replace('*', '(.*)')}$`, 'i');
     const match = relativeFilepath.match(regExp);
 
@@ -38,7 +38,7 @@ export function getGroup(
 }
 
 export function configToInternalConfig(config: Config): NextFbtInternalConfig {
-  const patterns: [string, string][] = config.nextFbt.patterns.flatMap(([group, groupPatterns]) => {
+  const groups: [string, string][] = config.nextFbt.groups.flatMap(([group, groupPatterns]) => {
     return groupPatterns.map((groupPatterns) => [groupPatterns, group] as [string, string]);
   });
 
@@ -52,6 +52,6 @@ export function configToInternalConfig(config: Config): NextFbtInternalConfig {
     ...config.i18n,
     ...config.nextFbt,
     publicDir,
-    patterns,
+    groups,
   };
 }

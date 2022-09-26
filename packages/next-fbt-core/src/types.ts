@@ -5,12 +5,12 @@ export type NextLocale = string & { __NEXT_LOCALE__: never };
 
 export type NextFbtConfig = {
   publicUrl: string;
-  patterns: [/* group */ string, /* patterns */ string[]][];
+  groups: [/* group */ string, /* patterns */ string[]][];
   rootDir?: string;
 };
 
-export type NextFbtInternalConfig = Required<Omit<NextFbtConfig, 'patterns'>> & {
-  patterns: [/* group */ string, /* pattern */ string][];
+export type NextFbtInternalConfig = Required<Omit<NextFbtConfig, 'groups'>> & {
+  groups: [/* group */ string, /* pattern */ string][];
   defaultLocale: string;
   locales?: string[];
   defaultGroup: string;

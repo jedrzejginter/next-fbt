@@ -67,7 +67,7 @@ export type NextFbtProps = {
   };
 };
 
-async function getProps(
+export async function getProps(
   ctx: {
     defaultLocale?: string | undefined;
     locale?: string | undefined;
@@ -88,7 +88,7 @@ async function getProps(
   };
 }
 
-export function withFbtIntl(input: string | { filepath: string }) {
+export function getPropsFetcher(input: string | { filepath: string }) {
   const getServerSideProps: GetServerSideProps = async (ctx) => ({
     props: await getProps(ctx, typeof input === 'string' ? { filepath: input } : input),
   });
@@ -100,7 +100,7 @@ export function withFbtIntl(input: string | { filepath: string }) {
   return { getStaticProps, getServerSideProps };
 }
 
-export function getTranslationsForComponent(input: string | { filepath: string }) {
+function getTranslationsForComponent(input: string | { filepath: string }) {
   const translationsToFetch = getGroups(
     (typeof input === 'string' ? { filepath: input } : input).filepath,
     config,

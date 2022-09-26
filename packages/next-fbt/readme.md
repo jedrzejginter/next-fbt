@@ -1,6 +1,9 @@
 # next-fbt
 
-> This documentation is very basic and will be extended when I am done with the implementation.
+## Useful links
+
+- [`facebook/fbt` - a JavaScript internationalization framework](https://github.com/facebook/fbt)
+- [`import.meta` - metadata of a JavaScript module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import.meta#using_import.meta)
 
 ## Setup
 
@@ -39,7 +42,7 @@
        publicUrl: 'http://localhost:3000/i18n',
        // Split translations by file path (relative to the CWD).
        // Must be array of [string, string[]].
-       patterns: [
+       groups: [
          // Example:
          ['components', ['src/components/*']],
          ['home-page', ['pages/index.tsx']],
@@ -52,7 +55,7 @@
          //   in 'public/i18n/<locale>/home-page.json
          // - all translations from "pages" directory (but not from "pages/index.tsx" file)
          //   will land in 'public/i18n/<locale>/other-pages.json
-         // - translations from files that don't match any of those
+         // - translations from files that don't match any of above
          //   patterns will be extracted to 'public/i18n/<locale>/main.json'
        ],
      },
@@ -151,6 +154,93 @@ module.exports = {
    ```
 
    </details>
+
+6. Fetch translations for your page.
+
+   _Notice, that for the translations to be fetched, the file you declare the fetching logic has to match any group from the config file._
+
+   ```tsx
+   import { getPropsFetcher } from 'next-fbt';
+
+   export default function Page() {
+     // your regular page component
+   }
+
+   export const { getServerSideProps } = getPropsFetcher(import.meta.url);
+   ```
+
+   <details>
+    <summary>I don't want to use `getServerSideProps`</summary>
+
+   ```diff
+   // same as above
+
+   - export const { getServerSideProps } = getPropsFetcher(import.meta.url);
+   + export const { getStaticProps } = getPropsFetcher(import.meta.url);
+   ```
+
+   </details>
+
+   <details>
+    <summary>I already have my own `getServerSideProps` defined</summary>
+
+   ```tsx
+   import { getProps } from 'next-fbt';
+
+   export function getServerSideProps(ctx) {
+     // your logic for `yourProps`...
+
+     const fbtProps = await getProps(ctx, import.meta.url);
+
+     return {
+       props: {
+         ...fbtProps,
+         ...yourProps,
+       },
+     };
+   }
+   ```
+
+   </details>
+
+## Lazy-loading for dynamic components
+
+The library has first-class support for lazy loading of translations for dynamic components (via `next/dynamic`).
+
+1. Replace `next/dynamic` with `next-fbt/dynamic`.
+
+   This is a little wrapper around `next/dynamic` that fetches required translations for components that is going to be rendered.
+
+   ```tsx
+   // Notice that difference in the import source (`next/dynamic` => `next-fbt/dynamic`).
+   import dynamic from 'next-fbt/dynamic';
+
+   // Limitation: the wrapper can be used only with components that are rendered on the client.
+   // If you wish to have SSR-rendered component, use regular `next/dynamic` and fetch translations
+   // via `getServerSideProps` / `getStaticProps`.
+   const Component = dynamic(() => import('/path/to/component'), { ssr: false });
+
+   export function Page() {
+     return (
+       // The component will be rendered after translations are fetched.
+       <Component />
+     );
+   }
+   ```
+
+2. Add a property on a component so `next-fbt/dynamic` knows what to fetch.
+
+   _If you use `memo` or `forwardRef` the `assignTranslations` has to wrap the memoized/ forwarded component, since `memo` and `forwadRef` loose non-React properties on a component_.
+
+   ```tsx
+   import { assignTranslations } from 'next-fbt';
+
+   export default function DynamicComponent() {
+     return (/* some jsx */)
+   }
+
+   assignTranslations(DynamicComponent, import.meta.url);
+   ```
 
 ## Collecting FBT's for translations
 
