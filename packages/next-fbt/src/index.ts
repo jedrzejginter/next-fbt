@@ -1,4 +1,4 @@
-export { withFbtIntl, getTranslationsForComponent, assignTranslations } from './fetching';
+export { getPropsFetcher, getProps, assignTranslations } from './fetching';
 export type { NextFbtProps } from './fetching';
 
 export { NextFbtProvider, useNextFbt, appWithNextFbt } from './context';
