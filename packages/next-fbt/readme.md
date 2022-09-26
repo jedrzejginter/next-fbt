@@ -1,5 +1,7 @@
 # next-fbt
 
+Easily integrate FBT with Next.js apps.
+
 ## Useful links
 
 - [`facebook/fbt` - a JavaScript internationalization framework](https://github.com/facebook/fbt)
